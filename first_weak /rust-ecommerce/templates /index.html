@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Rust E-Commerce</title>
+</head>
+
+<body>
+
+<h1>Produk</h1>
+
+<ul id="product-list"></ul>
+
+<h2>Tambah Produk</h2>
+
+<input id="name" placeholder="Nama produk">
+<input id="price" placeholder="Harga">
+<button onclick="addProduct()">Tambah</button>
+
+<script>
+
+async function loadProducts() {
+    const res = await fetch("/products");
+    const data = await res.json();
+
+    const list = document.getElementById("product-list");
+    list.innerHTML = "";
+
+    data.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.name + " - Rp" + p.price;
+        list.appendChild(li);
+    });
+}
+
+async function addProduct() {
+
+    const name = document.getElementById("name").value;
+    const price = document.getElementById("price").value;
+
+    await fetch("/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: name,
+            price: parseInt(price)
+        })
+    });
+
+    loadProducts();
+}
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
